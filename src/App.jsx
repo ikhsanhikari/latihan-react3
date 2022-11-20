@@ -1,47 +1,17 @@
 import {
-  OrderedListOutlined,
-  AppstoreOutlined,
-  HomeOutlined,
-  LogoutOutlined,
-  UserOutlined,
-  FormOutlined,
+  AppstoreOutlined, FormOutlined, HomeOutlined,
+  LogoutOutlined, OrderedListOutlined, UserOutlined
 } from "@ant-design/icons";
 import { Col, Menu, PageHeader, Row } from "antd";
-import React, { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
-import { ACCESS_TOKEN } from "./util/constant";
+import React, { useEffect, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { ACCESS_TOKEN, EMAIL, NAME, ROLE } from "./util/constant";
 
-const items = [
-  {
-    label: <Link to={"/home"}>Home</Link>,
-    key: "home",
-    icon: <HomeOutlined />,
-  },
-  {
-    label: <Link to={"/exercise"}>Exercise</Link>,
-    key: "exercise",
-    icon: <AppstoreOutlined />,
-  },
-  {
-    label: <Link to={"/list-pattern"}>Pattern</Link>,
-    key: "list_pattern",
-    icon: <OrderedListOutlined />,
-  },
-  {
-    label: <Link to={"/list-quiz"}>Quiz</Link>,
-    key: "list_quiz",
-    icon: <FormOutlined />,
-  },
-  {
-    label: <Link to={"/list-exercise"}>Exercise</Link>,
-    key: "list_exercise",
-    icon: <FormOutlined />,
-  },
-];
+let items = [];
 
 const rightItems = [
   {
-    label: <Link to={"/profile"}>Profile</Link>,
+    label: <Link to={"/profile"}>{localStorage.getItem("email")}</Link>,
     key: "profile",
     icon: <UserOutlined />,
   },
@@ -53,11 +23,62 @@ const rightItems = [
 ];
 const App = () => {
   const [current, setCurrent] = useState("home");
+  const [role, setRole] = useState();
   const onClick = (e) => {
     console.log("click ", e);
     setCurrent(e.key);
     if (e.key === "logout") {
       localStorage.removeItem(ACCESS_TOKEN);
+      localStorage.removeItem(EMAIL);
+      localStorage.removeItem(NAME);
+      localStorage.removeItem(ROLE);
+    }
+  };
+
+  useEffect(() => {
+    setRole(localStorage.getItem(ROLE));
+    checkRole(localStorage.getItem(ROLE));
+  }, []);
+
+  const checkRole = (role) => {
+    console.log(role);
+    if (role == "ROLE_USER") {
+      items = [
+        {
+          label: <Link to={"/home"}>Home</Link>,
+          key: "home",
+          icon: <HomeOutlined />,
+        },
+        {
+          label: <Link to={"/exercise"}>Exercise</Link>,
+          key: "exercise",
+          icon: <AppstoreOutlined />,
+        },
+      ];
+    } else if (role === "ROLE_INSTRUKTUR") {
+      items = [
+        {
+          label: <Link to={"/home"}>Home</Link>,
+          key: "home",
+          icon: <HomeOutlined />,
+        },
+        {
+          label: <Link to={"/list-pattern"}>Pattern</Link>,
+          key: "list_pattern",
+          icon: <OrderedListOutlined />,
+        },
+        {
+          label: <Link to={"/list-quiz"}>Quiz</Link>,
+          key: "list_quiz",
+          icon: <FormOutlined />,
+        },
+        {
+          label: <Link to={"/list-exercise"}>Exercise</Link>,
+          key: "list_exercise",
+          icon: <FormOutlined />,
+        },
+      ];
+    } else if (role === "ROLE_ADMIN") {
     }
   };
   return (

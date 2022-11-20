@@ -15,6 +15,9 @@ import ExerciseDetail from "../component/ExerciseDetail";
 import ListQuiz from "../component/ListQuiz";
 import ListExercise from "../component/ListExercise";
 import Quiz from "../component/Quiz";
+import ExercisePreview from "../component/ExercisePreview";
+import ResultAllStudentExercise from "../component/ResultAllStudentExercise";
+import ExercisePreviewForInstructur from "../component/ExercisePreviewForInstructur";
 
 const isAuth = () => {
   return localStorage.getItem("token") != null;
@@ -75,6 +78,18 @@ const RouterComponent = () => {
         {
           path: "/exercise-detail/:id",
           element: <ExerciseDetail />,
+        },
+        {
+          path: "/preview/:id",
+          element: <ExercisePreview />,
+        },
+        {
+          path: "/preview/:id/:studentId",
+          element: <ExercisePreviewForInstructur />,
+        },
+        {
+          path: "/result-all-student-exercise",
+          element: <ResultAllStudentExercise />,
         },
       ],
     },

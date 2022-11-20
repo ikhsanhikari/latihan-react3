@@ -1,18 +1,17 @@
 import {
-  AutoComplete,
   Button,
   Card,
-  Checkbox,
   Col,
   Form,
   Input,
+  notification,
   PageHeader,
   Row,
-  Select,
 } from "antd";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-const { Option } = Select;
+import axios from "axios";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../common/Constant";
 
 const formItemLayout = {
   labelCol: {
@@ -46,36 +45,35 @@ const tailFormItemLayout = {
 };
 const SignupComponent = () => {
   const [form] = Form.useForm();
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-  };
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
-        <Option value="62">+62</Option>
-        {/* <Option value="87">+87</Option> */}
-      </Select>
-    </Form.Item>
-  );
+  const navigate = useNavigate();
 
-  const [autoCompleteResult, setAutoCompleteResult] = useState([]);
-  const onWebsiteChange = (value) => {
-    if (!value) {
-      setAutoCompleteResult([]);
-    } else {
-      setAutoCompleteResult(
-        [".com", ".org", ".net"].map((domain) => `${value}${domain}`)
-      );
+  const openNotificationWithIcon = (type) => {
+    if (type === "success") {
+      notification[type]({
+        message: "Success",
+        description: "Success signup.",
+      });
+      navigate('/login')
+    } else if (type === "error") {
+      notification[type]({
+        message: "Failed",
+        description: "Faild to signup.",
+      });
     }
   };
-  const websiteOptions = autoCompleteResult.map((website) => ({
-    label: website,
-    value: website,
-  }));
+
+  const onFinish = (values) => {
+    console.log("Received values of form: ", values);
+    axios
+      .post(BASE_URL + "/auth/signup", values)
+      .then((item) => {
+        openNotificationWithIcon("success");
+      })
+      .catch(() => {
+        openNotificationWithIcon("error");
+      });
+  };
+
   return (
     <>
       <Row>
@@ -95,9 +93,6 @@ const SignupComponent = () => {
               form={form}
               name="register"
               onFinish={onFinish}
-              initialValues={{
-                prefix: "62",
-              }}
               scrollToFirstError
             >
               <Form.Item
@@ -111,6 +106,18 @@ const SignupComponent = () => {
                   {
                     required: true,
                     message: "Please input your E-mail!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="name"
+                label="Name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Name!",
                   },
                 ]}
               >
@@ -158,108 +165,9 @@ const SignupComponent = () => {
                 <Input.Password />
               </Form.Item>
 
-              <Form.Item
-                name="nickname"
-                label="Nickname"
-                tooltip="What do you want others to call you?"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your nickname!",
-                    whitespace: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                name="phone"
-                label="Phone Number"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your phone number!",
-                  },
-                ]}
-              >
-                <Input
-                  addonBefore={prefixSelector}
-                  style={{
-                    width: "100%",
-                  }}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="website"
-                label="Website"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input website!",
-                  },
-                ]}
-              >
-                <AutoComplete
-                  options={websiteOptions}
-                  onChange={onWebsiteChange}
-                  placeholder="website"
-                >
-                  <Input />
-                </AutoComplete>
-              </Form.Item>
-
-              <Form.Item
-                name="intro"
-                label="Intro"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input Intro",
-                  },
-                ]}
-              >
-                <Input.TextArea showCount maxLength={100} />
-              </Form.Item>
-
-              <Form.Item
-                name="gender"
-                label="Gender"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select gender!",
-                  },
-                ]}
-              >
-                <Select placeholder="select your gender">
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
-                  <Option value="other">Other</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                name="agreement"
-                valuePropName="checked"
-                rules={[
-                  {
-                    validator: (_, value) =>
-                      value
-                        ? Promise.resolve()
-                        : Promise.reject(new Error("Should accept agreement")),
-                  },
-                ]}
-                {...tailFormItemLayout}
-              >
-                <Checkbox>
-                  I have read the <Link to={"/agreement"}>agreement</Link>
-                </Checkbox>
-              </Form.Item>
               <Form.Item {...tailFormItemLayout}>
                 <Button type="primary" htmlType="submit">
-                  Register
+                  Signup
                 </Button>
               </Form.Item>
             </Form>

@@ -1,20 +1,51 @@
-import { Button, Card, Col, Collapse, Layout, Row } from "antd";
+import { Button, Card, Checkbox, Col, Collapse, Form, Layout, Row } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
+import axios from "axios";
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { BASE_URL } from "../common/Constant";
+import { ACCESS_TOKEN } from "../util/constant";
 
 const { Panel } = Collapse;
-const text = `class Program{
-  public static void main(String[]args){
-      System.out.println("Hikari learning");System.out.println("Hikari learning");System.out.println("Hikari learning");
-  }
-} `;
+
 export const ListPattern = () => {
+  const [patterns, setPatterns] = useState([]);
+  const [lastIndex, setLastIndex] = useState();
+  const [listPattern, setlistPattern] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(BASE_URL + "/pattern/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        setPatterns(item.data.data);
+        setLastIndex(item.data.data.length);
+      });
+  }, []);
+
+  const onChange = (e) => {
+    let newList = [];
+    if (e.target.checked) {
+      newList = [...listPattern, e.target.value];
+    } else {
+      console.log(listPattern);
+      newList = listPattern.filter((listItem) => {
+        return listItem !== e.target.value;
+      });
+    }
+    setlistPattern(newList);
+  };
   return (
     <Layout>
+      {console.log(listPattern)}
       <Header>List Pattern</Header>
       <Content>
         <br />
@@ -23,35 +54,43 @@ export const ListPattern = () => {
             <Button type="primary">Create pattern</Button>
           </Link>
           <br /> <br />
-          <Row>
-            <Col span={24}>
-              <Card title="List Pattern">
-                <Collapse defaultActiveKey={["1", "2", "3"]} ghost>
-                  <Panel header="Pattern 1" key="1">
-                    <Card title="Conditional,Low" bordered={false}>
-                      <SyntaxHighlighter language="java" style={dark}>
-                        {text}
-                      </SyntaxHighlighter>
-                    </Card>
-                  </Panel>
-                  <Panel header="Pattern 2" key="2">
-                    <Card title="Sequential,Low" bordered={false}>
-                      <SyntaxHighlighter language="java" style={dark}>
-                        {text}
-                      </SyntaxHighlighter>
-                    </Card>
-                  </Panel>
-                  <Panel header="Pattern 3" key="3">
-                    <Card title="Looping,Low" bordered={false}>
-                      <SyntaxHighlighter language="java" style={dark}>
-                        {text}
-                      </SyntaxHighlighter>
-                    </Card>
-                  </Panel>
-                </Collapse>
-              </Card>
-            </Col>
-          </Row>
+          <Form>
+            <Row>
+              <Col span={24}>
+                <Card title="List Pattern">
+                  {/* <Checkbox.Group name="listPatterns"> */}
+                  <Collapse ghost defaultActiveKey={[{ lastIndex }]}>
+                    {patterns.map((item) => (
+                      <Panel
+                        key={item.id}
+                        header={
+                          // <Checkbox
+                          //   value={item.id}
+                          //   style={{
+                          //     lineHeight: "32px",
+                          //   }}
+                          //   onChange={onChange}
+                          // >
+                          "Pattern " + item.id
+                          // </Checkbox>
+                        }
+                      >
+                        <Card
+                          title={item.courseType + " " + item.courseLevel}
+                          bordered={false}
+                        >
+                          <SyntaxHighlighter language="java" style={dark}>
+                            {item.pattern}
+                          </SyntaxHighlighter>
+                        </Card>
+                      </Panel>
+                    ))}
+                  </Collapse>
+                  {/* </Checkbox.Group> */}
+                </Card>
+              </Col>
+            </Row>
+          </Form>
         </Card>
       </Content>
       <Footer>@ikhsanhikari</Footer>

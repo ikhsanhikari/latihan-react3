@@ -1,8 +1,7 @@
-import { LockOutlined, UserOutlined, GoogleOutlined } from "@ant-design/icons";
+import { GoogleOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import {
   Button,
   Card,
-  Checkbox,
   Col,
   Form,
   Input,
@@ -11,26 +10,47 @@ import {
   Row,
   Typography,
 } from "antd";
+import axios from "axios";
 
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../common/Constant";
+import { ACCESS_TOKEN, EMAIL, NAME, ROLE } from "../util/constant";
 
 const { Title } = Typography;
 
 const LoginComponent = () => {
-  const natigate = useNavigate();
+  const navigate = useNavigate();
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    natigate("/");
-    localStorage.setItem(ACCESS_TOKEN, "ini token");
-    openNotificationWithIcon("success");
+    axios
+      .post(BASE_URL + "/auth/login", values)
+      .then((item) => {
+        localStorage.setItem(ACCESS_TOKEN, item.data.accessToken);
+        localStorage.setItem(NAME, item.data.name);
+        localStorage.setItem(ROLE, item.data.role);
+        localStorage.setItem(EMAIL, item.data.email);
+        openNotificationWithIcon("success");
+        navigate("/");
+        window.location.reload();
+      })
+      .catch((e) => {
+        console.log(e);
+        openNotificationWithIcon("error");
+      });
   };
   const openNotificationWithIcon = (type) => {
-    notification[type]({
-      message: "Success",
-      description: "Succes system login.",
-    });
+    if (type === "success") {
+      notification[type]({
+        message: "Success",
+        description: "Success system login.",
+      });
+    } else if (type === "error") {
+      notification[type]({
+        message: "Failed",
+        description: "Faild to login.",
+      });
+    }
   };
 
   return (
@@ -61,17 +81,17 @@ const LoginComponent = () => {
             >
               <Title level={2}>Login</Title>
               <Form.Item
-                name="username"
+                name="email"
                 rules={[
                   {
                     required: true,
-                    message: "Please input your Username!",
+                    message: "Please input your Email!",
                   },
                 ]}
               >
                 <Input
                   prefix={<UserOutlined className="site-form-item-icon" />}
-                  placeholder="Username"
+                  placeholder="Email"
                 />
               </Form.Item>
               <Form.Item
@@ -90,10 +110,6 @@ const LoginComponent = () => {
                 />
               </Form.Item>
               <Form.Item>
-                <Form.Item name="remember" valuePropName="checked" noStyle>
-                  <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-
                 <Link className="login-form-forgot" to={"/forgot_password"}>
                   Forgot password
                 </Link>

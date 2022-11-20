@@ -1,19 +1,48 @@
-import { Button, Card, Col, Row } from "antd";
-import React from "react";
+import { Button, Card, Col, Row, notification } from "antd";
+import React, { useState } from "react";
 import { java } from "@codemirror/lang-java";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
-// import {CodeOutlined,ForwardOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 export const LiveCode = () => {
+  const codeString = `class Program{
+    public static void main(String[]args){
+        System.out.println("Hikari learning");
+    }
+} `;
+
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "Success",
+      description: "Success compile",
+    });
+  };
+  const [request, setRequest] = useState({
+    code: codeString,
+    language: "cpp",
+    input: "",
+  });
+  const [output, setOutput] = useState("");
   const onChange = React.useCallback((value, viewUpdate) => {
     console.log("value:", value);
+    setRequest({
+      code: value,
+    });
   }, []);
-  const codeString = `class Program{
-        public static void main(String[]args){
-            System.out.println("Hikari learning");
-        }
-    } `;
+
+  const compile = () => {
+    axios
+      .post("https://codex-api.herokuapp.com", request)
+      .then((item) => {
+        console.log(item);
+        openNotificationWithIcon("success");
+        setOutput(item.data.error);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <Card bordered={false}>
       <Row justify="start">
@@ -27,7 +56,7 @@ export const LiveCode = () => {
               theme={oneDark}
             />
             <br />
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" onClick={compile} htmlType="submit">
               Compile
             </Button>
           </Card>
@@ -35,7 +64,7 @@ export const LiveCode = () => {
         </Col>
         <Col span={12}>
           <Card bordered={false} title={"Output"}>
-            Hikari Learning
+            {output}
           </Card>
         </Col>
       </Row>

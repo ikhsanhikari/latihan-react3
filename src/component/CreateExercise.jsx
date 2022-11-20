@@ -1,16 +1,22 @@
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   Card,
   Col,
   Form,
   Input,
-  InputNumber,
   Layout,
-  Radio,
+  notification,
   Row,
+  Select,
+  Space,
 } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../common/Constant";
+import { ACCESS_TOKEN } from "../util/constant";
 const layout = {
   labelCol: {
     span: 8,
@@ -34,9 +40,59 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 const CreateExercise = () => {
+  const [patterns, setPatterns] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios
+      .get(BASE_URL + "/pattern/lov", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        setPatterns(item.data.data);
+      });
+  }, []);
   const onFinish = (values) => {
-    console.log(values);
+    var req = {
+      exerciseName: values.exercise.name,
+      description: values.exercise.description,
+      patterns: values.patterns,
+    };
+    console.log(req);
+    axios
+      .post(BASE_URL + "/exercise/", req, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        console.log(item);
+        openNotificationWithIcon("success");
+        navigate('/list-exercise')
+      })
+      .catch(() => {
+        openNotificationWithIcon("error");
+      });
   };
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+  };
+
+  const openNotificationWithIcon = (type) => {
+    if (type === "success") {
+      notification[type]({
+        message: "Success",
+        description: "Success create exercise.",
+      });
+    } else if (type === "error") {
+      notification[type]({
+        message: "Failed",
+        description: "Faild to create exercise.",
+      });
+    }
+  };
+
   return (
     <Layout>
       <Header>Create Exercise</Header>
@@ -52,62 +108,88 @@ const CreateExercise = () => {
               >
                 <Form.Item
                   name={["exercise", "name"]}
-                  label="Name"
                   rules={[
                     {
                       required: true,
                     },
                   ]}
                 >
-                  <Input />
-                </Form.Item>
-
-                <Form.Item
-                  name={["exercise", "totalExercise"]}
-                  label="Total Exercise"
-                  rules={[
-                    {
-                      type: "number",
-                      min: 0,
-                      max: 99,
-                      required: true,
-                    },
-                  ]}
-                >
-                  <InputNumber />
+                  <Input placeholder="Exercise Name" />
                 </Form.Item>
                 <Form.Item
                   name={["exercise", "description"]}
-                  label="Description"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
                 >
-                  <Input.TextArea />
+                  <Input placeholder="Description" />
                 </Form.Item>
-                <Form.Item
-                  name={["exercise", "courseType"]}
-                  label="Course Type"
-                  rules={[{ required: true }]}
-                >
-                  <Radio.Group buttonStyle="outline">
-                    <Radio.Button value="sequential">Sequential</Radio.Button>
-                    <Radio.Button value="conditional">Conditional</Radio.Button>
-                    <Radio.Button value="looping">Looping</Radio.Button>
-                  </Radio.Group>
-                </Form.Item>
-                <Form.Item
-                  name={["exercise", "level"]}
-                  label="Course Level"
-                  rules={[{ required: true }]}
-                >
-                  <Radio.Group buttonStyle="outline">
-                    <Radio.Button value="low">Low</Radio.Button>
-                    <Radio.Button value="medium">Medium</Radio.Button>
-                    <Radio.Button value="high">High</Radio.Button>
-                  </Radio.Group>
-                </Form.Item>
+                <Form.List name="patterns">
+                  {(fields, { add, remove }) => (
+                    <>
+                      {fields.map(({ key, name, ...restField }) => (
+                        <Space
+                          key={key}
+                          style={{
+                            display: "flex",
+                            marginBottom: 8,
+                          }}
+                          align="baseline"
+                        >
+                          <Form.Item
+                            {...restField}
+                            name={[name, "patternId"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Missing pattern",
+                              },
+                            ]}
+                          >
+                            <Select
+                              defaultValue=""
+                              style={{
+                                width: 600,
+                              }}
+                              onChange={handleChange}
+                              options={patterns}
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "amount"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Missing amount",
+                              },
+                            ]}
+                          >
+                            <Input type="number" placeholder="Amount" />
+                          </Form.Item>
+                          <MinusCircleOutlined onClick={() => remove(name)} />
+                        </Space>
+                      ))}
+                      <Form.Item>
+                        <Button
+                          type="dashed"
+                          onClick={() => add()}
+                          block
+                          icon={<PlusOutlined />}
+                        >
+                          Add list pattern
+                        </Button>
+                      </Form.Item>
+                    </>
+                  )}
+                </Form.List>
+
                 <Form.Item
                   wrapperCol={{
                     ...layout.wrapperCol,
-                    offset: 8,
+                    // offset: 8,
                   }}
                 >
                   <Button type="primary" htmlType="submit">
