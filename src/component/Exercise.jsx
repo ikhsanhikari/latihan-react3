@@ -58,7 +58,7 @@ export const Exercise = () => {
                     <br />
                     <Row justify="center">
                       {item.isDone ? (
-                        <Link to={`/preview/${item.generateId}`}>
+                        <Link to={`/preview-for-student/${item.generateId}`}>
                           <Button type="danger" icon={<CheckCircleOutlined />}>
                             Preview
                           </Button>

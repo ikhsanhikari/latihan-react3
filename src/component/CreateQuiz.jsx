@@ -6,11 +6,16 @@ import {
   Input,
   InputNumber,
   Layout,
+  notification,
   Radio,
   Row,
 } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
+import axios from "axios";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../common/Constant";
+import { ACCESS_TOKEN } from "../util/constant";
 const layout = {
   labelCol: {
     span: 8,
@@ -34,15 +39,32 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 const CreateQuiz = () => {
+  const navigate = useNavigate();
   const onFinish = (values) => {
-    console.log(values);
+    axios
+      .post(BASE_URL + `/quiz`, values.quiz, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        console.log(item);
+        navigate("/list-quiz");
+        openNotificationWithIcon("success");
+      });
+  };
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "Success",
+      description: "Success Create Quiz",
+    });
   };
   return (
     <Layout>
       <Header>Create Quiz</Header>
       <Content>
         <Row justify="start">
-          <Col span={15}>
+          <Col span={17}>
             <Card bordered={false} title="Create Quiz here">
               <Form
                 {...layout}
@@ -51,8 +73,8 @@ const CreateQuiz = () => {
                 validateMessages={validateMessages}
               >
                 <Form.Item
-                  name={["quiz", "name"]}
-                  label="Name"
+                  name={["quiz", "quizName"]}
+                  label="Quiz Name"
                   rules={[
                     {
                       required: true,
@@ -61,49 +83,40 @@ const CreateQuiz = () => {
                 >
                   <Input />
                 </Form.Item>
-
-                <Form.Item
-                  name={["quiz", "totalQuiz"]}
-                  label="Total Quiz"
-                  rules={[
-                    {
-                      type: "number",
-                      min: 0,
-                      max: 99,
-                      required:true
-                    },
-                  ]}
-                >
-                  <InputNumber />
-                </Form.Item>
                 <Form.Item
                   name={["quiz", "description"]}
                   label="Description"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
                 >
-                  <Input.TextArea />
+                  <Input.TextArea rows={5} />
                 </Form.Item>
                 <Form.Item
-                  name={["quiz", "courseType"]}
-                  label="Course Type"
-                  rules={[{ required: true }]}
+                  name={["quiz", "longQuizTimer"]}
+                  label="Long Quiz Timer"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
                 >
-                  <Radio.Group buttonStyle="outline" >
-                    <Radio.Button value="sequential">Sequential</Radio.Button>
-                    <Radio.Button value="conditional">Conditional</Radio.Button>
-                    <Radio.Button value="looping">Looping</Radio.Button>
-                  </Radio.Group>
+                  <Input />
                 </Form.Item>
                 <Form.Item
-                  name={["quiz", "level"]}
-                  label="Course Level"
-                  rules={[{ required: true }]}
+                  name={["quiz", "question"]}
+                  label="Question"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
                 >
-                  <Radio.Group buttonStyle="outline">
-                    <Radio.Button value="low">Low</Radio.Button>
-                    <Radio.Button value="medium">Medium</Radio.Button>
-                    <Radio.Button value="high">High</Radio.Button>
-                  </Radio.Group>
+                  <Input.TextArea rows={10} />
                 </Form.Item>
+
                 <Form.Item
                   wrapperCol={{
                     ...layout.wrapperCol,

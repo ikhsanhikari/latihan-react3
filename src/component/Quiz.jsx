@@ -1,59 +1,91 @@
-import { Button, Card, Col, Form, Input, Row, Tabs, Typography } from "antd";
-import React from "react";
-
-const { Text } = Typography;
-const items = new Array(10).fill(null).map((_, i) => {
-  const id = String(i + 1);
-  return {
-    label: `Quiz ${id}`,
-    key: id,
-    children: (
-      <>
-        <Card bordered={false}>
-          <Row>
-            <Col span={12}>
-            <Text strong>Soal untuk quiz {id} : </Text>
-              <Form.Item
-                label={`answer no.${id} here`}
-                name={["answer", `quiz${id}`]}
-                required={true}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
-      </>
-    ),
-  };
-});
+import { Avatar, Button, Card, Col, Layout, List, Row } from "antd";
+import { Content, Footer, Header } from "antd/lib/layout/layout";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../common/Constant";
+import { CURRENT_QUIZ_ID } from "../common/Util";
+import { ACCESS_TOKEN } from "../util/constant";
 
 const Quiz = () => {
-  const onFinish = (values) => {
-    console.log(values);
+  const [quizs, setQuizs] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios
+      .get(BASE_URL + `/quiz`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        setQuizs(item.data.data);
+      });
+  }, []);
+
+  const detail = (text) => {
+    if (
+      localStorage.getItem(CURRENT_QUIZ_ID) != null &&
+      localStorage.getItem(CURRENT_QUIZ_ID) != text.id
+    ) {
+      alert("You in quiz " + localStorage.getItem(CURRENT_QUIZ_ID));
+    } else {
+      localStorage.setItem(CURRENT_QUIZ_ID, text.id);
+      navigate(`/quiz-detail/` + text.id);
+    }
   };
-  function onChange(activeKey) {
-    console.log(activeKey);
-  }
+
   return (
-    <div className="card-container">
-      <Card title={`Quiz`}>
-        <Row>
-          <Col>
-            <Form onFinish={onFinish} layout={"vertical"}>
-              <Tabs type="card" onChange={onChange} items={items} />
-              <Card bordered={false}>
-                <Form.Item>
-                  <Button type="primary" htmlType="submit">
-                    Submit
-                  </Button>
-                </Form.Item>
+    <>
+      <Layout>
+        <Header>Quiz</Header>
+        <Content>
+          <Row align="middle" justify="center">
+            <Col span={24}>
+              <Card bordered={false} title={"All Quiz"}>
+                <Button
+                  danger
+                  type="primary"
+                  onClick={() => {
+                    navigate("/result-quiz");
+                  }}
+                >
+                  Quiz Result
+                </Button>
+                <br />
+                <br />
+                <List
+                  itemLayout="horizontal"
+                  dataSource={quizs}
+                  renderItem={(item) => (
+                    <List.Item
+                      actions={[
+                        <Button
+                          type="primary"
+                          onClick={(e) => {
+                            detail(item);
+                          }}
+                        >
+                          Challenge
+                        </Button>,
+                      ]}
+                    >
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar src="https://thumbs.dreamstime.com/b/deep-learning-icon-isolated-white-background-your-web-mobile-app-design-133861833.jpg" />
+                        }
+                        title={item.quizName}
+                        description={item.description}
+                      />
+                    </List.Item>
+                  )}
+                />
               </Card>
-            </Form>
-          </Col>
-        </Row>
-      </Card>
-    </div>
+            </Col>
+          </Row>
+        </Content>
+        <Footer>@Ikhsanhikari</Footer>
+      </Layout>
+    </>
   );
 };
 export default Quiz;

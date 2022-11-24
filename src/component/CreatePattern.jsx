@@ -1,7 +1,7 @@
 import { java } from "@codemirror/lang-java";
 import { oneDark } from "@codemirror/theme-one-dark";
 import CodeMirror from "@uiw/react-codemirror";
-import { Button, Card, Col, Layout, notification, Row } from "antd";
+import { Button, Card, Col, Layout, notification, Popconfirm, Radio, Row } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React, { useState } from "react";
@@ -13,10 +13,17 @@ import { ACCESS_TOKEN } from "../util/constant";
 
 export const CreatePattern = () => {
   const openNotificationWithIcon = (type) => {
-    notification[type]({
-      message: "Success",
-      description: "Success create pattern.",
-    });
+    if (type === "success") {
+      notification[type]({
+        message: "Success",
+        description: "Success create and save pattern.",
+      });
+    } else if (type === "error") {
+      notification[type]({
+        message: "Failed",
+        description: "Faild to create and save pattern.",
+      });
+    }
   };
 
   const codeString = `class Program{
@@ -25,23 +32,20 @@ export const CreatePattern = () => {
     }
 } `;
 
-  const [request, setRequest] = useState({
-    pattern: codeString,
-    courseLevel: "low",
-    courseType: "sequential",
-  });
-
+  const [pattern, setPattern] = useState(codeString);
   const [result, setResult] = useState({});
+  const [courseLevel, setCourseLevel] = useState("");
+  const [courseType, setCourseType] = useState("");
 
-  const onChange = React.useCallback((value, viewUpdate) => {
-    setRequest({
-      pattern: value,
-      courseLevel: "low",
-      courseType: "sequential",
-    });
+  const onChange = React.useCallback((value) => {
+    setPattern(value);
   }, []);
 
   const createPattern = () => {
+    var request = {};
+    request.courseLevel = courseLevel;
+    request.courseType = courseType;
+    request.pattern = pattern;
     axios
       .post(BASE_URL + "/pattern/", request, {
         headers: {
@@ -49,10 +53,17 @@ export const CreatePattern = () => {
         },
       })
       .then((data) => {
-        openNotificationWithIcon("success");
+        var tamp = data.data.data.output;
+        if (data.data.data.output == null) {
+          tamp = data.data.data.error;
+          openNotificationWithIcon("error");
+        } else {
+          openNotificationWithIcon("success");
+        }
+        console.log(tamp);
         setResult({
           outputPattern: data.data.data.patternResult,
-          output: data.data.data.output,
+          output: tamp,
         });
       });
   };
@@ -72,14 +83,49 @@ export const CreatePattern = () => {
                 theme={oneDark}
               />
               <br />
-              <Button
+              <Radio.Group
+                buttonStyle="outline"
+                onChange={(e) => {
+                  setCourseType(e.target.value);
+                }}
+                defaultValue="sequential"
+              >
+                <Radio.Button value="sequential">Sequential</Radio.Button>
+                <Radio.Button value="conditional">Conditional</Radio.Button>
+                <Radio.Button value="looping">Looping</Radio.Button>
+              </Radio.Group>
+              <br />
+              <br />
+              <Radio.Group
+                buttonStyle="outline"
+                onChange={(e) => {
+                  setCourseLevel(e.target.value);
+                }}
+                defaultValue="low"
+              >
+                <Radio.Button value="low">Low</Radio.Button>
+                <Radio.Button value="medium">Medium</Radio.Button>
+                <Radio.Button value="high">High</Radio.Button>
+              </Radio.Group>
+              <br />
+              <br />
+              {/* <Button
                 type="primary"
                 ghost={true}
                 htmlType="submit"
                 onClick={createPattern}
               >
                 Create Pattern
-              </Button>
+              </Button> */}
+              <Popconfirm
+                title="Are you sure to create this pattern?"
+                onConfirm={(e) => createPattern()}
+                // onCancel={cancel}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button type="primary">Create Pattern</Button>
+              </Popconfirm>
             </Card>
           </Col>
           <Col span={12}>

@@ -1,10 +1,16 @@
 import {
-  AppstoreOutlined, FormOutlined, HomeOutlined,
-  LogoutOutlined, OrderedListOutlined, UserOutlined
+  AlertOutlined,
+  FormOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+  OrderedListOutlined,
+  RocketOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Col, Menu, PageHeader, Row } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { checkLogic, CURRENT_QUIZ_ID, TIMER_QUIZ } from "./common/Util";
 import { ACCESS_TOKEN, EMAIL, NAME, ROLE } from "./util/constant";
 
 let items = [];
@@ -24,6 +30,7 @@ const rightItems = [
 const App = () => {
   const [current, setCurrent] = useState("home");
   const [role, setRole] = useState();
+  const navigate = useNavigate();
   const onClick = (e) => {
     console.log("click ", e);
     setCurrent(e.key);
@@ -38,10 +45,25 @@ const App = () => {
   useEffect(() => {
     setRole(localStorage.getItem(ROLE));
     checkRole(localStorage.getItem(ROLE));
+    if (localStorage.getItem(TIMER_QUIZ) != null) {
+      navigate("/quiz-detail/" + localStorage.getItem(CURRENT_QUIZ_ID));
+    }
   }, []);
 
+  var path = window.location.pathname;
+  const routes = checkLogic(path);
+  function itemRender(route) {
+    const last = routes.indexOf(route) === routes.length - 1;
+    return last ? (
+      <span>{route.breadcrumbName}</span>
+    ) : (
+      <Link to={route.path}>
+        <span key={route.breadcrumbName}>{route.breadcrumbName}</span>
+      </Link>
+    );
+  }
+
   const checkRole = (role) => {
-    console.log(role);
     if (role == "ROLE_USER") {
       items = [
         {
@@ -50,9 +72,14 @@ const App = () => {
           icon: <HomeOutlined />,
         },
         {
-          label: <Link to={"/exercise"}>Exercise</Link>,
+          label: <Link to={"/exercise"}>My Exercise</Link>,
           key: "exercise",
-          icon: <AppstoreOutlined />,
+          icon: <RocketOutlined />,
+        },
+        {
+          label: <Link to={"/quiz"}>My Quiz</Link>,
+          key: "quiz",
+          icon: <AlertOutlined />,
         },
       ];
     } else if (role === "ROLE_INSTRUKTUR") {
@@ -63,17 +90,17 @@ const App = () => {
           icon: <HomeOutlined />,
         },
         {
-          label: <Link to={"/list-pattern"}>Pattern</Link>,
+          label: <Link to={"/list-pattern"}>Pattern Management</Link>,
           key: "list_pattern",
           icon: <OrderedListOutlined />,
         },
         {
-          label: <Link to={"/list-quiz"}>Quiz</Link>,
+          label: <Link to={"/list-quiz"}>Quiz Management</Link>,
           key: "list_quiz",
           icon: <FormOutlined />,
         },
         {
-          label: <Link to={"/list-exercise"}>Exercise</Link>,
+          label: <Link to={"/list-exercise"}>Exercise Management</Link>,
           key: "list_exercise",
           icon: <FormOutlined />,
         },
@@ -106,10 +133,13 @@ const App = () => {
       </Row>
 
       <PageHeader
-        className="site-page-header"
-        onBack={() => null}
+        style={{
+          border: "1px solid rgb(235, 237, 240)",
+        }}
         title="Hikari Learning"
-        subTitle="learning react, make it easy at all"
+        subTitle="learning programming basic, make it easy"
+        breadcrumb={{ routes, itemRender }}
+        ghost={false}
       />
 
       <Outlet></Outlet>

@@ -24,7 +24,9 @@ const ResultAllStudentExercise = () => {
 
   const onClickData = (record, e) => {
     e.preventDefault();
-    navigate("/preview/" + record.generateId + "/" + record.studentId);
+    navigate(
+      "/preview-for-instructur/" + record.generateId + "/" + record.studentId
+    );
     console.log(record);
   };
 
@@ -57,6 +59,7 @@ const ResultAllStudentExercise = () => {
       title: "Student Name",
       dataIndex: "studentName",
       key: "studentName",
+      defaultSortOrder: 'descend',
       filters: [
         {
           text: "hikari29",
@@ -66,8 +69,11 @@ const ResultAllStudentExercise = () => {
       onFilter: (value, record) => {
         return record.studentName.indexOf(value) === 0;
       },
-      sorter: (a, b) => a.studentName.length - b.studentName.length,
-    //   sortDirections: ["descend"],
+      sorter: (a, b) => {
+        console.log(a.studentName+" "+b.studentName)
+        return a.studentName.length - b.studentName.length;
+      },
+      //   sortDirections: ["descend"],
     },
     {
       title: "Student Email",
@@ -93,14 +99,14 @@ const ResultAllStudentExercise = () => {
     },
   ];
   const onChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
+    console.log("params", pagination, filters, sorter, extra);
   };
   return (
     <Layout>
       <Header>Result answer of each student</Header>
       <Content>
         <Card>
-          <Table columns={columns} dataSource={results} onChange={onChange}/>
+          <Table columns={columns} dataSource={results} onChange={onChange} />
         </Card>
       </Content>
       <Footer>@ikhsanhikari</Footer>

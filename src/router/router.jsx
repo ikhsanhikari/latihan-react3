@@ -18,9 +18,14 @@ import Quiz from "../component/Quiz";
 import ExercisePreview from "../component/ExercisePreview";
 import ResultAllStudentExercise from "../component/ResultAllStudentExercise";
 import ExercisePreviewForInstructur from "../component/ExercisePreviewForInstructur";
+import DetailQuiz from "../component/DetailQuiz";
+import QuizCorrection from "../component/QuizCorrection";
+import FinishQuiz from "../component/FinishQuiz";
+import ResultQuizEachStudent from "../component/ResultQuizEachStudent";
+import { ACCESS_TOKEN } from "../util/constant";
 
 const isAuth = () => {
-  return localStorage.getItem("token") != null;
+  return localStorage.getItem(ACCESS_TOKEN) != null;
 };
 
 const RouterComponent = () => {
@@ -80,16 +85,32 @@ const RouterComponent = () => {
           element: <ExerciseDetail />,
         },
         {
-          path: "/preview/:id",
+          path: "/preview-for-student/:id",
           element: <ExercisePreview />,
         },
         {
-          path: "/preview/:id/:studentId",
+          path: "/preview-for-instructur/:id/:studentId",
           element: <ExercisePreviewForInstructur />,
         },
         {
           path: "/result-all-student-exercise",
           element: <ResultAllStudentExercise />,
+        },
+        {
+          path: "/quiz-detail/:id",
+          element: <DetailQuiz />,
+        },
+        {
+          path: "/quiz-correction/:id",
+          element: <QuizCorrection />,
+        },
+        {
+          path: "/finish-quiz",
+          element: <FinishQuiz />,
+        },
+        {
+          path: "/result-quiz",
+          element: <ResultQuizEachStudent />,
         },
       ],
     },
