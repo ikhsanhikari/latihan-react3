@@ -12,7 +12,7 @@ const FinishQuiz = () => {
         <Button
           type="primary"
           onClick={() => {
-            navigate("/");
+            navigate("/quiz");
           }}
         >
           Home

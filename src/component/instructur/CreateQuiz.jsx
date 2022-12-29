@@ -3,19 +3,15 @@ import {
   Card,
   Col,
   Form,
-  Input,
-  InputNumber,
-  Layout,
-  notification,
-  Radio,
-  Row,
+  Input, Layout,
+  notification, Row
 } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 const layout = {
   labelCol: {
     span: 8,
@@ -51,12 +47,20 @@ const CreateQuiz = () => {
         console.log(item);
         navigate("/list-quiz");
         openNotificationWithIcon("success");
+      }).catch(()=>{
+        errorNotificationWithIcon("error")
       });
   };
   const openNotificationWithIcon = (type) => {
     notification[type]({
       message: "Success",
       description: "Success Create Quiz",
+    });
+  };
+  const errorNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "Error",
+      description: "Failed Create Quiz",
     });
   };
   return (

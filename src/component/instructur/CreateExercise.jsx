@@ -15,8 +15,8 @@ import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 const layout = {
   labelCol: {
     span: 8,

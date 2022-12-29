@@ -1,18 +1,19 @@
-import { Alert, Card, Col, Layout, Row } from "antd";
+import { Alert, Button, Card, Col, Layout, Row } from "antd";
 import { Content, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const ExercisePreviewForInstructur = () => {
   const [exercises, setExercises] = useState([]);
   const [resultAnswer, setResultAnswer] = useState({});
   let { id, studentId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -61,6 +62,16 @@ const ExercisePreviewForInstructur = () => {
                 Your answer: {item.yourAnswer} <br />
               </Card>
             ))}
+            <Card>
+              <Button
+                type="primary"
+                onClick={() => {
+                  navigate("/result-all-student-exercise");
+                }}
+              >
+                Finish
+              </Button>
+            </Card>
           </Col>
         </Row>
       </Content>

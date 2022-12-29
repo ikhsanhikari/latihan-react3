@@ -2,8 +2,6 @@ import { ACCESS_TOKEN } from "../util/constant";
 import jwt from "jwt-decode";
 
 export const checkLogic = (param) => {
-  console.log(param);
-  console.log(param.includes("/preview-for-instructur"));
   var item = [];
   if (param === "/create-pattern") {
     item = [
@@ -174,3 +172,4 @@ export const currentIdLogin =
 export const TIMER_QUIZ = "timer_" + currentIdLogin;
 export const CURRENT_QUIZ_ID = "current_quiz_" + currentIdLogin;
 export const LONG_QUIZ_TIME = 5;
+export const IS_SUBMITTED = "isSubmitted_" + currentIdLogin;

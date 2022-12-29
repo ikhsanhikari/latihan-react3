@@ -3,9 +3,9 @@ import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../common/Constant";
-import { CURRENT_QUIZ_ID } from "../common/Util";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { CURRENT_QUIZ_ID, IS_SUBMITTED } from "../../common/Util";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const Quiz = () => {
   const [quizs, setQuizs] = useState([]);
@@ -30,6 +30,7 @@ const Quiz = () => {
       alert("You in quiz " + localStorage.getItem(CURRENT_QUIZ_ID));
     } else {
       localStorage.setItem(CURRENT_QUIZ_ID, text.id);
+      localStorage.setItem(IS_SUBMITTED, false);
       navigate(`/quiz-detail/` + text.id);
     }
   };

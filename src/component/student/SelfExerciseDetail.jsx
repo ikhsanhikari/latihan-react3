@@ -15,8 +15,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const layout = {
   labelCol: {
@@ -27,7 +27,7 @@ const layout = {
   },
 };
 
-const ExerciseDetail = () => {
+const SelfExerciseDetail = () => {
   const [exercises, setExercises] = useState([]);
   let { id } = useParams();
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const ExerciseDetail = () => {
 
   useEffect(() => {
     axios
-      .get(BASE_URL + "/exercise_answer/" + id, {
+      .get(BASE_URL + "/self_exercise_answer/" + id, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
         },
@@ -64,7 +64,7 @@ const ExerciseDetail = () => {
       generateId: id,
     };
     axios
-      .post(BASE_URL + "/student_exercise_answer/", req, {
+      .post(BASE_URL + "/student_self_exercise_answer/", req, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
         },
@@ -72,7 +72,7 @@ const ExerciseDetail = () => {
       .then((item) => {
         console.log(item);
         openNotificationWithIcon("success");
-        navigate("/preview/" + id);
+        navigate("/self-preview-for-student/" + id);
       });
   };
 
@@ -124,4 +124,4 @@ const ExerciseDetail = () => {
   );
 };
 
-export default ExerciseDetail;
+export default SelfExerciseDetail;

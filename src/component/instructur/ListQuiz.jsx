@@ -1,12 +1,12 @@
-import { Button, Card, Col, Layout, Row, Table } from "antd";
+import { Button, Card, Col, Layout, Row, Space, Table } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const ListQuiz = () => {
   const [quiz, setQuiz] = useState([]);
@@ -22,9 +22,14 @@ const ListQuiz = () => {
         setQuiz(item.data.data);
       });
   }, []);
+
   const viewQuizStudent = (text, record) => {
     console.log(record);
     navigate("/quiz-correction/" + record.id);
+  };
+
+  const updateQuiz = (text, record) => {
+    navigate("/update-quiz/" + record.id);
   };
 
   const columns = [
@@ -59,6 +64,11 @@ const ListQuiz = () => {
       key: "notCorrectedYet",
     },
     {
+      title: "Created Date",
+      dataIndex: "createdDate",
+      key: "createdDate",
+    },
+    {
       title: "Question",
       dataIndex: "question",
       key: "question",
@@ -83,22 +93,31 @@ const ListQuiz = () => {
       question: "action",
       render: (text, record, index) => (
         <>
-          {record.notCorrectedYet > 0 ? (
-            <Button
+          <Space>
+            {record.notCorrectedYet > 0 ? (
+              <Button
+                type="primary"
+                danger
+                onClick={(e) => viewQuizStudent(text, record)}
+              >
+                Need correction
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                onClick={(e) => viewQuizStudent(text, record)}
+              >
+                All corrected
+              </Button>
+            )}
+
+            {/* <Button
               type="primary"
-              danger
-              onClick={(e) => viewQuizStudent(text, record)}
+              onClick={(e) => updateQuiz(text, record)}
             >
-              Need correction
-            </Button>
-          ) : (
-            <Button
-              type="primary"
-              onClick={(e) => viewQuizStudent(text, record)}
-            >
-              All corrected
-            </Button>
-          )}
+              Update quiz
+            </Button> */}
+          </Space>
         </>
       ),
     },
@@ -112,7 +131,11 @@ const ListQuiz = () => {
             <Button type="primary">Create Quiz</Button>
           </Link>
           <br /> <br />
-          <Table columns={columns} dataSource={quiz} />
+          <Table
+            columns={columns}
+            dataSource={quiz}
+            rowKey={quiz.id}
+          />
         </Card>
       </Content>
       <Footer>@ikhsanhikari</Footer>

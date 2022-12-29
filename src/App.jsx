@@ -6,6 +6,7 @@ import {
   OrderedListOutlined,
   RocketOutlined,
   UserOutlined,
+  TrophyFilled,
 } from "@ant-design/icons";
 import { Col, Menu, PageHeader, Row } from "antd";
 import React, { useEffect, useState } from "react";
@@ -32,7 +33,6 @@ const App = () => {
   const [role, setRole] = useState();
   const navigate = useNavigate();
   const onClick = (e) => {
-    console.log("click ", e);
     setCurrent(e.key);
     if (e.key === "logout") {
       localStorage.removeItem(ACCESS_TOKEN);
@@ -72,6 +72,11 @@ const App = () => {
           icon: <HomeOutlined />,
         },
         {
+          label: <Link to={"/self-exercise"}>My Self Exercise</Link>,
+          key: "self-exercise",
+          icon: <RocketOutlined />,
+        },
+        {
           label: <Link to={"/exercise"}>My Exercise</Link>,
           key: "exercise",
           icon: <RocketOutlined />,
@@ -104,13 +109,47 @@ const App = () => {
           key: "list_exercise",
           icon: <FormOutlined />,
         },
+        {
+          label: <Link to={"/student"}>My Student</Link>,
+          key: "student",
+          icon: <TrophyFilled />,
+        },
       ];
     } else if (role === "ROLE_ADMIN") {
+      items = [
+        {
+          label: <Link to={"/home"}>Home</Link>,
+          key: "home",
+          icon: <HomeOutlined />,
+        },
+        {
+          label: <Link to={"/management-user"}>User Management</Link>,
+          key: "management-user",
+          icon: <UserOutlined />,
+        },
+        {
+          label: <Link to={"/list-self-exercise"}>Self Exercise</Link>,
+          key: "list_self_exercise",
+          icon: <FormOutlined />,
+        },
+        {
+          label: <Link to={"/list-pattern"}>Pattern Management</Link>,
+          key: "list_pattern",
+          icon: <OrderedListOutlined />,
+        },
+      ];
     }
   };
   return (
     <div>
-      <Row>
+      <Row
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
+          width: "100%",
+        }}
+      >
         <Col span={18}>
           <Menu
             onClick={onClick}

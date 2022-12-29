@@ -12,14 +12,14 @@ import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 import { EyeTwoTone, PlayCircleTwoTone } from "@ant-design/icons";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import moment from "moment";
 
 const cancel = (e) => {
-  console.log(e);
   message.error("Cancle generate exercise");
 };
 
@@ -40,7 +40,6 @@ const ListExercise = () => {
   };
   const onGenerate = (key, e) => {
     e.preventDefault();
-    console.log(key);
     axios
       .get(BASE_URL + "/exercise/" + key, {
         headers: {
@@ -83,6 +82,14 @@ const ListExercise = () => {
       key: "description",
     },
     {
+      title: "Created Date",
+      dataIndex: "creationDate",
+      key: "creationDate",
+      render: (text, record, index) => (
+        <div>{moment(record.creationDate).format("yyyy-MM-DD HH:mm:ss")}</div>
+      ),
+    },
+    {
       title: "Action",
       dataIndex: "action",
       key: "action",
@@ -119,7 +126,6 @@ const ListExercise = () => {
         },
       })
       .then((item) => {
-        console.log(item.data.data);
         setExercises(item.data.data);
       });
   }, []);
@@ -138,7 +144,11 @@ const ListExercise = () => {
               </Link>
             </Space>
             <br /> <br />
-            <Table columns={columns} dataSource={exercises} />
+            <Table
+              columns={columns}
+              dataSource={exercises}
+              rowKey={(record) => record.id}
+            />
           </Card>
         </Content>
         <Footer>@ikhsanhikari</Footer>

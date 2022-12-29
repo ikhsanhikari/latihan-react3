@@ -4,8 +4,8 @@ import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const ResultAllStudentExercise = () => {
   const [results, setResults] = useState([]);
@@ -59,18 +59,21 @@ const ResultAllStudentExercise = () => {
       title: "Student Name",
       dataIndex: "studentName",
       key: "studentName",
-      defaultSortOrder: 'descend',
+      defaultSortOrder: "descend",
       filters: [
         {
           text: "hikari29",
           value: "hikari29",
+        },
+        {
+          text: "student2",
+          value: "student2",
         },
       ],
       onFilter: (value, record) => {
         return record.studentName.indexOf(value) === 0;
       },
       sorter: (a, b) => {
-        console.log(a.studentName+" "+b.studentName)
         return a.studentName.length - b.studentName.length;
       },
       //   sortDirections: ["descend"],
@@ -106,7 +109,12 @@ const ResultAllStudentExercise = () => {
       <Header>Result answer of each student</Header>
       <Content>
         <Card>
-          <Table columns={columns} dataSource={results} onChange={onChange} />
+          <Table
+            columns={columns}
+            dataSource={results}
+            onChange={onChange}
+            rowKey={(record) => record.id}
+          />
         </Card>
       </Content>
       <Footer>@ikhsanhikari</Footer>

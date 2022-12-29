@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const { Panel } = Collapse;
 
@@ -28,18 +28,6 @@ export const ListPattern = () => {
       });
   }, []);
 
-  // const onChange = (e) => {
-  //   let newList = [];
-  //   if (e.target.checked) {
-  //     newList = [...listPattern, e.target.value];
-  //   } else {
-  //     console.log(listPattern);
-  //     newList = listPattern.filter((listItem) => {
-  //       return listItem !== e.target.value;
-  //     });
-  //   }
-  //   setlistPattern(newList);
-  // };
   return (
     <Layout>
       <Header>List Pattern</Header>
@@ -50,27 +38,12 @@ export const ListPattern = () => {
             <Button type="primary">Create pattern</Button>
           </Link>
           <br /> <br />
-          {/* <Form> */}
           <Row>
             <Col span={24}>
               <Card title="List Pattern">
-                {/* <Checkbox.Group name="listPatterns"> */}
                 <Collapse ghost defaultActiveKey={[{ lastIndex }]}>
                   {patterns.map((item) => (
-                    <Panel
-                      key={item.id}
-                      header={
-                        // <Checkbox
-                        //   value={item.id}
-                        //   style={{
-                        //     lineHeight: "32px",
-                        //   }}
-                        //   onChange={onChange}
-                        // >
-                        "Pattern " + item.id
-                        // </Checkbox>
-                      }
-                    >
+                    <Panel key={item.id} header={"Pattern " + item.id}>
                       <Card
                         title={item.courseType + " " + item.courseLevel}
                         bordered={false}
@@ -82,11 +55,9 @@ export const ListPattern = () => {
                     </Panel>
                   ))}
                 </Collapse>
-                {/* </Checkbox.Group> */}
               </Card>
             </Col>
           </Row>
-          {/* </Form> */}
         </Card>
       </Content>
       <Footer>@ikhsanhikari</Footer>

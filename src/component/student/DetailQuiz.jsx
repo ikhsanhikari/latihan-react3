@@ -16,26 +16,33 @@ import axios from "axios";
 import jwt from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_URL, COMPILER_API } from "../common/Constant";
-import { CURRENT_QUIZ_ID, LONG_QUIZ_TIME, TIMER_QUIZ } from "../common/Util";
-import { ACCESS_TOKEN } from "../util/constant";
+import {
+  BASE_URL,
+  COMPILER_API,
+  COMPILER_LANGUAGE,
+  Default_C_code,
+} from "../../common/Constant";
+import {
+  currentIdLogin,
+  CURRENT_QUIZ_ID,
+  IS_SUBMITTED,
+  TIMER_QUIZ,
+} from "../../common/Util";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const DetailQuiz = () => {
   const { id } = useParams();
   const [quiz, setQuiz] = useState({});
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(Default_C_code);
   const [output, setOutput] = useState("");
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = useState(COMPILER_LANGUAGE);
   const navigate = useNavigate();
   const [counter, setCounter] = useState({});
+  let interval;
+
   const onChange = React.useCallback((value) => {
     setCode(value);
   }, []);
-  let javaCode = `class Program{
-    public static void main(String[]args){
-        System.out.println("Hikari learning");
-    }
-} `;
 
   const getGuizById = () => {
     axios
@@ -66,7 +73,7 @@ const DetailQuiz = () => {
     } else {
       time = timer;
     }
-    const id = setInterval(() => {
+    interval = setInterval(() => {
       var now = new Date().getTime();
 
       var distance = time - now;
@@ -75,21 +82,17 @@ const DetailQuiz = () => {
       setCounter({ minutes: minutes, seconds: seconds });
 
       if (distance < 0) {
-        clearInterval(id);
-        setCounter({ minutes: 0, seconds: 0 });
-        localStorage.removeItem(TIMER_QUIZ);
-        localStorage.removeItem(CURRENT_QUIZ_ID);
-        navigate("/finish-quiz");
+        clearInterval(interval);
+        finishQuiz();
       }
     }, 1000);
+
     return () => {
-      clearInterval(id);
+      clearInterval(interval);
     };
   };
 
   useEffect(() => {
-    setLanguage("java");
-    setCode(javaCode);
     getGuizById();
 
     // eslint-disable-next-line
@@ -116,7 +119,21 @@ const DetailQuiz = () => {
       description: "Success compile",
     });
   };
+  const finishQuiz = () => {
+    // console.log(localStorage.getItem(IS_SUBMITTED));
+    // if (!localStorage.getItem(IS_SUBMITTED)) {
+    //   localStorage.removeItem(IS_SUBMITTED);
+    //   console.log("Time's up!");
+    //   onSubmit();
+    // } else {
+    //   localStorage.removeItem(IS_SUBMITTED);
+    //   console.log("Quiz has Sumitted!");
+    // }
+    onSubmit();
+  };
   const onSubmit = () => {
+    console.log('interval '+interval);
+    clearInterval(interval);
     var userId = jwt(localStorage.getItem(ACCESS_TOKEN));
     var req = {};
     req.studentId = userId.sub;
@@ -133,6 +150,8 @@ const DetailQuiz = () => {
         setCounter({ minutes: 0, seconds: 0 });
         localStorage.removeItem(TIMER_QUIZ);
         localStorage.removeItem(CURRENT_QUIZ_ID);
+        localStorage.setItem(IS_SUBMITTED, true);
+        console.log("set submitted true");
         navigate("/finish-quiz");
       });
   };
@@ -140,7 +159,7 @@ const DetailQuiz = () => {
     <>
       <Layout>
         <Header>
-          Detail quiz = {counter.minutes} {counter.seconds}
+          Due time in minutes = {counter.minutes} {counter.seconds}
         </Header>
         <Content>
           <br />
@@ -156,7 +175,7 @@ const DetailQuiz = () => {
             </Col>
             <Col span={12}>
               <CodeMirror
-                value={javaCode}
+                value={code}
                 height="600px"
                 extensions={[java()]}
                 onChange={onChange}

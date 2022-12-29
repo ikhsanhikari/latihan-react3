@@ -2,8 +2,8 @@ import { Card, Col, Layout, Row, Table } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const ResultQuizEachStudent = () => {
   const [quiz, setQuiz] = useState([]);
@@ -43,7 +43,7 @@ const ResultQuizEachStudent = () => {
       render: (text, record, index) => (
         <Card>
           <Row>
-            <Col span={12}>
+            <Col>
               <pre
                 style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}
               >
@@ -62,7 +62,7 @@ const ResultQuizEachStudent = () => {
       render: (text, record, index) => (
         <Card>
           <Row>
-            <Col span={12}>
+            <Col>
               <pre
                 style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}
               >
@@ -94,6 +94,8 @@ const ResultQuizEachStudent = () => {
             style={{ verticalAlign: "top" }}
             columns={columns}
             dataSource={quiz}
+            rowClassName={(record, index) => "rowTable"}
+            rowKey={(record) => record.id}
           />
         </Card>
       </Content>

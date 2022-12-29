@@ -16,8 +16,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { BASE_URL } from "../common/Constant";
-import { ACCESS_TOKEN } from "../util/constant";
+import { BASE_URL } from "../../common/Constant";
+import { ACCESS_TOKEN } from "../../util/constant";
 
 const QuizCorrection = () => {
   const { id } = useParams();
@@ -171,7 +171,7 @@ const QuizCorrection = () => {
         },
       })
       .then((item) => {
-        console.log(item);
+        getAllStudentQuiz();
       });
   };
   return (
@@ -179,7 +179,11 @@ const QuizCorrection = () => {
       <Layout>
         <Header>List Quiz</Header>
         <Content>
-          <Table columns={columns} dataSource={quiz} />
+          <Table
+            columns={columns}
+            dataSource={quiz}
+            rowKey={(record) => record.id}
+          />
         </Content>
         <Footer></Footer>
       </Layout>
