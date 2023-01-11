@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../common/Constant";
+import { currentIdLogin } from "../../common/Util";
 import { ACCESS_TOKEN } from "../../util/constant";
 
 const StudentReport = () => {
@@ -57,6 +58,19 @@ const StudentReport = () => {
       });
   };
 
+  const downloadReport = () => {
+    console.log("ke klik kok");
+    axios
+      .get(BASE_URL + "/report/student/" + currentIdLogin, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        // messageApi.success("Success generate report !");
+      });
+  };
+
   useEffect(() => {
     getUserByInstructur();
   }, []);
@@ -65,7 +79,16 @@ const StudentReport = () => {
       <Header>List Student</Header>
       <Content>
         <Card title={"My Student"}>
-          <Table columns={columns} dataSource={user} rowKey={user.id} />
+          <Button type="primary" onClick={() => downloadReport()}>
+            Download
+          </Button>
+          <br />
+          <br />
+          <Table
+            columns={columns}
+            dataSource={user}
+            rowKey={(record) => record.id}
+          />
         </Card>
       </Content>
       <Footer></Footer>

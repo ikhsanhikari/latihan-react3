@@ -4,34 +4,38 @@ import App from "../App";
 import LoginComponent from "../auth/LoginComponent";
 import SignupComponent from "../auth/SignupComponent";
 import PageNotFoundComponent from "../common/PageNotFoundComponent";
+import CreateSelfExercise from "../component/admin/CreateSelfExercise";
+import CreateUser from "../component/admin/CreateUser";
+import ListSelfExercise from "../component/admin/ListSelfExercise";
 import ManagementUser from "../component/admin/ManagementUser";
-import DetailQuiz from "../component/student/DetailQuiz";
-import ExerciseDetail from "../component/student/ExerciseDetail";
-import ExercisePreview from "../component/student/ExercisePreview";
-import ExercisePreviewForInstructur from "../component/instructur/ExercisePreviewForInstructur";
+import UploadModule from "../component/admin/UploadModule";
 import CreateExercise from "../component/instructur/CreateExercise";
 import { CreatePattern } from "../component/instructur/CreatePattern";
 import CreateQuiz from "../component/instructur/CreateQuiz";
+import ExercisePreviewForInstructur from "../component/instructur/ExercisePreviewForInstructur";
 import ListExercise from "../component/instructur/ListExercise";
 import { ListPattern } from "../component/instructur/ListPattern";
 import ListQuiz from "../component/instructur/ListQuiz";
-import ProfileComponent from "../component/ProfileComponent";
+import { ProfileStudentForInstructur } from "../component/instructur/ProfileStudentForInstructur";
 import QuizCorrection from "../component/instructur/QuizCorrection";
 import ResultAllStudentExercise from "../component/instructur/ResultAllStudentExercise";
 import ResultQuizEachStudent from "../component/instructur/ResultQuizEachStudent";
+import ProfileComponent from "../component/ProfileComponent";
+import DetailQuiz from "../component/student/DetailQuiz";
 import { Exercise } from "../component/student/Exercise";
+import ExerciseDetail from "../component/student/ExerciseDetail";
+import ExercisePreview from "../component/student/ExercisePreview";
 import FinishQuiz from "../component/student/FinishQuiz";
+import Module from "../component/student/Module";
 import Quiz from "../component/student/Quiz";
-import { Home } from "../home/Home";
-import { ACCESS_TOKEN } from "../util/constant";
-import CreateUser from "../component/admin/CreateUser";
-import StudentReport from "../component/student/StudentReport";
 import { SelfExercise } from "../component/student/SelfExercise";
-import ListSelfExercise from "../component/admin/ListSelfExercise";
-import CreateSelfExercise from "../component/admin/CreateSelfExercise";
 import SelfExerciseDetail from "../component/student/SelfExerciseDetail";
 import SelfExercisePreview from "../component/student/SelfExercisePreview";
-import { ProfileStudentForInstructur } from "../component/instructur/ProfileStudentForInstructur";
+import StudentReport from "../component/instructur/StudentReport";
+import { Home } from "../home/Home";
+import { ACCESS_TOKEN } from "../util/constant";
+import UpdateQuiz from "../component/instructur/UpdateQuiz";
+import UpdateUser from "../component/admin/UpdateUser";
 
 const isAuth = () => {
   return localStorage.getItem(ACCESS_TOKEN) != null;
@@ -94,7 +98,7 @@ const RouterComponent = () => {
         },
         {
           path: "/update-quiz/:id",
-          element: <CreateQuiz />,
+          element: <UpdateQuiz />,
         },
         {
           path: "/create-exercise",
@@ -157,12 +161,24 @@ const RouterComponent = () => {
           element: <CreateUser />,
         },
         {
+          path: "/update-user/:id",
+          element: <UpdateUser />,
+        },
+        {
           path: "/student",
           element: <StudentReport />,
         },
         {
           path: "/student-profile-for-instructur/:id",
           element: <ProfileStudentForInstructur />,
+        },
+        {
+          path: "/upload-module",
+          element: <UploadModule />,
+        },
+        {
+          path: "/list-module",
+          element: <Module />,
         },
       ],
     },

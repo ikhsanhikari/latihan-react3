@@ -1,4 +1,4 @@
-import { Button, Card, Layout, Pagination, Table } from "antd";
+import { Button, Card, Layout, message, Popconfirm, Space, Table } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React from "react";
@@ -14,7 +14,20 @@ const ManagementUser = () => {
   const navigate = useNavigate();
   const [totalElements, setTotalElements] = useState("");
   const [size, setSize] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
 
+  const downloadReport = () => {
+    console.log("ke klik kok");
+    axios
+      .get(BASE_URL + "/report/users", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        // messageApi.success("Success generate report !");
+      });
+  };
   const getFilterInstructur = () => {
     axios
       .get(BASE_URL + "/user/instructur/filter", {
@@ -36,7 +49,7 @@ const ManagementUser = () => {
       .then((item) => {
         setUser(item.data.data.content);
         setTotalElements(item.data.data.totalElements);
-        setSize(item.data.data.size)
+        setSize(item.data.data.size);
       });
   };
   useEffect(() => {
@@ -93,7 +106,55 @@ const ManagementUser = () => {
           : record.instructur.email.indexOf(value) === 0;
       },
     },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      render: (text, record, value) => (
+        <Space>
+          <Button
+            type="primary"
+            onClick={(e) => {
+              navigate("/update-user/" + record.id);
+            }}
+          >
+            Update
+          </Button>
+
+          {record.role == "ROLE_INSTRUKTUR" || record.role == "ROLE_ADMIN" ? (
+            // <Popconfirm
+            //   title="Are you sure to delete this user?"
+            //   onConfirm={(e) => deleteUser(record)}
+            //   okText="Yes"
+            //   cancelText="No"
+            // >
+              <Button type="primary" disabled>Delete</Button>
+            // </Popconfirm>
+          ) : (
+            <Popconfirm
+              title="Are you sure to delete this user?"
+              onConfirm={(e) => deleteUser(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="primary">Delete</Button>
+            </Popconfirm>
+          )}
+        </Space>
+      ),
+    },
   ];
+  const deleteUser = (record) => {
+    axios
+      .delete(BASE_URL + `/user/` + record.id, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        getUser("");
+      });
+  };
 
   const onChangePage = (values) => {
     getUser("?page=" + (values.current - 1) + "&size=" + values.pageSize);
@@ -103,14 +164,20 @@ const ManagementUser = () => {
       <Header>List User</Header>
       <Content>
         <Card>
-          <Button
-            type="primary"
-            onClick={() => {
-              navigate("/create-user");
-            }}
-          >
-            Create User
-          </Button>
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => {
+                navigate("/create-user");
+              }}
+            >
+              Create User
+            </Button>
+            <Button type="primary" onClick={() => downloadReport()}>
+              Download
+            </Button>
+          </Space>
+
           <br />
           <br />
           <Table
@@ -120,7 +187,7 @@ const ManagementUser = () => {
               defaultPageSize: 10,
               showSizeChanger: true,
               total: totalElements,
-              pageSizeOptions: ["5","10", "20", "30"],
+              pageSizeOptions: ["5", "10", "20", "30"],
               size: size,
             }}
             rowKey={(record) => record.id}

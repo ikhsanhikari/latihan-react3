@@ -7,6 +7,7 @@ import {
   RocketOutlined,
   UserOutlined,
   TrophyFilled,
+  CloudUploadOutlined
 } from "@ant-design/icons";
 import { Col, Menu, PageHeader, Row } from "antd";
 import React, { useEffect, useState } from "react";
@@ -86,6 +87,11 @@ const App = () => {
           key: "quiz",
           icon: <AlertOutlined />,
         },
+        {
+          label: <Link to={"/list-module"}>My Module</Link>,
+          key: "module",
+          icon: <AlertOutlined />,
+        },
       ];
     } else if (role === "ROLE_INSTRUKTUR") {
       items = [
@@ -136,6 +142,11 @@ const App = () => {
           label: <Link to={"/list-pattern"}>Pattern Management</Link>,
           key: "list_pattern",
           icon: <OrderedListOutlined />,
+        },
+        {
+          label: <Link to={"/upload-module"}>Upload Module</Link>,
+          key: "upload_module",
+          icon: <CloudUploadOutlined />,
         },
       ];
     }

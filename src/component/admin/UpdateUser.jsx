@@ -14,7 +14,7 @@ import axios from "axios";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../common/Constant";
 import { ACCESS_TOKEN } from "../../util/constant";
 
@@ -39,11 +39,15 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-const CreateUser = () => {
+const UpdateUser = () => {
   const navigate = useNavigate();
   const [instructur, setInstructur] = useState([]);
   const [hideInstructur, setHideInstructur] = useState(true);
-  useEffect(() => {
+  const { id } = useParams();
+  const [form] = Form.useForm();
+  const [defaultValues, setFieldsValues] = useState({});
+
+  const instructurLov = () => {
     axios
       .get(BASE_URL + "/user/instructur/lov", {
         headers: {
@@ -53,12 +57,32 @@ const CreateUser = () => {
       .then((item) => {
         setInstructur(item.data.data);
       });
+  };
+
+  const getUserById = () => {
+    axios
+      .get(BASE_URL + "/user/" + id, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        form.setFieldsValue(item.data.data);
+        console.log(item.data.data.role);
+        if (item.data.data.role == "ROLE_USER") {
+          setHideInstructur(false);
+        }
+      });
+  };
+
+  useEffect(() => {
+    instructurLov();
+    getUserById();
   }, []);
 
   const onFinish = (values) => {
-    console.log(values);
     axios
-      .post(BASE_URL + "/user", values.user, {
+      .post(BASE_URL + "/user", values, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
         },
@@ -104,9 +128,22 @@ const CreateUser = () => {
               <Col span={12}>
                 <Form
                   onFinish={onFinish}
+                  form={form}
+                  defaultValue={defaultValues}
                   validateMessages={validateMessages}
                   {...layout}
                 >
+                  <Form.Item
+                    label={"ID"}
+                    rules={[
+                      {
+                        required: true,
+                      },
+                    ]}
+                    name={"id"}
+                  >
+                    <Input disabled />
+                  </Form.Item>
                   <Form.Item
                     label={"Name"}
                     rules={[
@@ -114,7 +151,7 @@ const CreateUser = () => {
                         required: true,
                       },
                     ]}
-                    name={["user", "name"]}
+                    name={"name"}
                   >
                     <Input />
                   </Form.Item>
@@ -125,18 +162,19 @@ const CreateUser = () => {
                         required: true,
                       },
                     ]}
-                    name={["user", "email"]}
+                    name={"email"}
                   >
                     <Input />
                   </Form.Item>
                   <Form.Item
+                    hidden
                     label={"Password"}
                     rules={[
                       {
                         required: true,
                       },
                     ]}
-                    name={["user", "password"]}
+                    name={"password"}
                   >
                     <Input.Password />
                   </Form.Item>
@@ -147,7 +185,7 @@ const CreateUser = () => {
                         required: true,
                       },
                     ]}
-                    name={["user", "role"]}
+                    name={"role"}
                   >
                     <Select
                       onChange={onChange}
@@ -168,7 +206,7 @@ const CreateUser = () => {
                           required: true,
                         },
                       ]}
-                      name={["user", "instructurId"]}
+                      name={"instructurId"}
                     >
                       <Select options={instructur} />
                     </Form.Item>
@@ -195,4 +233,4 @@ const CreateUser = () => {
   );
 };
 
-export default CreateUser;
+export default UpdateUser;

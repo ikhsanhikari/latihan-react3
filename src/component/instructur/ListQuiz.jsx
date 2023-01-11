@@ -111,12 +111,12 @@ const ListQuiz = () => {
               </Button>
             )}
 
-            {/* <Button
+            <Button
               type="primary"
               onClick={(e) => updateQuiz(text, record)}
             >
               Update quiz
-            </Button> */}
+            </Button>
           </Space>
         </>
       ),
@@ -134,7 +134,7 @@ const ListQuiz = () => {
           <Table
             columns={columns}
             dataSource={quiz}
-            rowKey={quiz.id}
+            rowKey={(record)=>record.id}
           />
         </Card>
       </Content>

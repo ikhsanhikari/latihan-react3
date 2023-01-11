@@ -1,4 +1,4 @@
-import { Button, Card, Col, Collapse, Layout, Row } from "antd";
+import { Button, Card, Col, Collapse, Layout, Row, Space } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -15,6 +15,18 @@ export const ListPattern = () => {
   const [patterns, setPatterns] = useState([]);
   const [lastIndex, setLastIndex] = useState();
 
+  const downloadReport = () => {
+    console.log("ke klik kok");
+    axios
+      .get(BASE_URL + "/report/pattern", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        // messageApi.success("Success generate report !");
+      });
+  };
   useEffect(() => {
     axios
       .get(BASE_URL + "/pattern/", {
@@ -34,9 +46,13 @@ export const ListPattern = () => {
       <Content>
         <br />
         <Card title="List Pattern" bordered={false}>
+          <Space>
           <Link to={"/create-pattern"}>
             <Button type="primary">Create pattern</Button>
           </Link>
+          <Button type="primary" onClick={()=>{downloadReport()}}>Download</Button>  
+          </Space>
+          
           <br /> <br />
           <Row>
             <Col span={24}>

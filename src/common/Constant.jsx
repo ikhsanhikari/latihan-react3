@@ -1,8 +1,8 @@
 export const BASE_URL = "http://localhost:9090";
-// export const BASE_URL = "http://192.168.141.183:9090";
+// export const BASE_URL = "http://192.168.64.1:9090";
 
 // export const COMPILER_API = "https://codex-api.herokuapp.com";
-// export const COMPILER_API = "http://192.168.141.183:3333";
+// export const COMPILER_API = "http://192.168.64.1:3333";
 export const COMPILER_API = "http://localhost:3333";
 
 export const  COMPILER_LANGUAGE = "c"
