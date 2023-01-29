@@ -174,16 +174,32 @@ const QuizCorrection = () => {
         getAllStudentQuiz();
       });
   };
+  const downloadReport = () => {
+    console.log("ke klik kok");
+    axios
+      .get(BASE_URL + "/report/quiz/" + id, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      })
+      .then((item) => {
+        // messageApi.success("Success generate report !");
+      });
+  };
   return (
     <>
       <Layout>
         <Header>List Quiz</Header>
         <Content>
-          <Table
-            columns={columns}
-            dataSource={quiz}
-            rowKey={(record) => record.id}
-          />
+          <Card>
+            <Button type="primary" onClick={()=>{downloadReport()}}>Download</Button>
+            <br /> <br />
+            <Table
+              columns={columns}
+              dataSource={quiz}
+              rowKey={(record) => record.id}
+            />
+          </Card>
         </Content>
         <Footer></Footer>
       </Layout>

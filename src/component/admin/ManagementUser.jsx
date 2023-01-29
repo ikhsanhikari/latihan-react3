@@ -7,6 +7,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../common/Constant";
 import { ACCESS_TOKEN } from "../../util/constant";
+import {
+  UserAddOutlined,
+  DownloadOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 
 const ManagementUser = () => {
   const [instructur, setInstructur] = useState([]);
@@ -24,9 +30,7 @@ const ManagementUser = () => {
           Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
         },
       })
-      .then((item) => {
-        // messageApi.success("Success generate report !");
-      });
+      .then((item) => {});
   };
   const getFilterInstructur = () => {
     axios
@@ -113,6 +117,7 @@ const ManagementUser = () => {
       render: (text, record, value) => (
         <Space>
           <Button
+            icon={<EditOutlined />}
             type="primary"
             onClick={(e) => {
               navigate("/update-user/" + record.id);
@@ -122,14 +127,9 @@ const ManagementUser = () => {
           </Button>
 
           {record.role == "ROLE_INSTRUKTUR" || record.role == "ROLE_ADMIN" ? (
-            // <Popconfirm
-            //   title="Are you sure to delete this user?"
-            //   onConfirm={(e) => deleteUser(record)}
-            //   okText="Yes"
-            //   cancelText="No"
-            // >
-              <Button type="primary" disabled>Delete</Button>
-            // </Popconfirm>
+            <Button type="primary" danger disabled icon={<DeleteOutlined />}>
+              Delete
+            </Button>
           ) : (
             <Popconfirm
               title="Are you sure to delete this user?"
@@ -137,7 +137,9 @@ const ManagementUser = () => {
               okText="Yes"
               cancelText="No"
             >
-              <Button type="primary">Delete</Button>
+              <Button type="primary" danger icon={<DeleteOutlined />}>
+                Delete
+              </Button>
             </Popconfirm>
           )}
         </Space>
@@ -166,6 +168,7 @@ const ManagementUser = () => {
         <Card>
           <Space>
             <Button
+              icon={<UserAddOutlined />}
               type="primary"
               onClick={() => {
                 navigate("/create-user");
@@ -173,7 +176,12 @@ const ManagementUser = () => {
             >
               Create User
             </Button>
-            <Button type="primary" onClick={() => downloadReport()}>
+            <Button
+              type="primary"
+              danger
+              icon={<DownloadOutlined />}
+              onClick={() => downloadReport()}
+            >
               Download
             </Button>
           </Space>

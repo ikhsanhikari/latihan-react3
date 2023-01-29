@@ -17,6 +17,7 @@ import { ACCESS_TOKEN } from "../../util/constant";
 import { EyeTwoTone, PlayCircleTwoTone } from "@ant-design/icons";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { PlusOutlined } from "@ant-design/icons";
 
 const cancel = (e) => {
   message.error("Cancle generate exercise");
@@ -60,7 +61,7 @@ const ListSelfExercise = () => {
         },
       })
       .then((item) => {
-        console.log(key)
+        console.log(key);
         setPatterns(item.data);
       });
   };
@@ -91,6 +92,7 @@ const ListSelfExercise = () => {
             <Button
               onClick={(e) => onClickData(record.id, e)}
               icon={<EyeTwoTone />}
+              type="primary"
             >
               View
             </Button>
@@ -102,7 +104,9 @@ const ListSelfExercise = () => {
               okText="Yes"
               cancelText="No"
             >
-              <Button icon={<PlayCircleTwoTone />}>Generate</Button>
+              <Button icon={<PlayCircleTwoTone />} type="primary" >
+                Generate
+              </Button>
             </Popconfirm>
           </Space>
         </>
@@ -129,7 +133,9 @@ const ListSelfExercise = () => {
           <Card>
             <Space>
               <Link to={"/create-self-exercise"}>
-                <Button type="primary">Create Self Exercise</Button>
+                <Button type="primary" icon={<PlusOutlined />}>
+                  Create Self Exercise
+                </Button>
               </Link>
             </Space>
             <br /> <br />

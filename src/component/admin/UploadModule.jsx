@@ -110,7 +110,7 @@ const UploadModule = () => {
       <Content>
         <Card>
           <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Upload Module</Button>
+            <Button icon={<UploadOutlined />} type="primary" danger>Upload Module</Button>
           </Upload>
 
           <br />

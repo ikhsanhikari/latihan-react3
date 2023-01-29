@@ -1,3 +1,4 @@
+import { ExclamationOutlined, PlusOutlined } from "@ant-design/icons";
 import { java } from "@codemirror/lang-java";
 import { oneDark } from "@codemirror/theme-one-dark";
 import CodeMirror from "@uiw/react-codemirror";
@@ -12,12 +13,12 @@ import {
   Popover,
   Radio,
   Row,
-  Space,
+  Space
 } from "antd";
 import { Content, Footer, Header } from "antd/lib/layout/layout";
 import axios from "axios";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import {
@@ -25,10 +26,9 @@ import {
   Conditional_C_code,
   Default_C_code,
   Looping_C_code,
-  Sequential_C_code,
+  Sequential_C_code
 } from "../../common/Constant";
 import { ACCESS_TOKEN } from "../../util/constant";
-import { ExclamationOutlined } from "@ant-design/icons";
 
 export const CreatePattern = () => {
   const openNotificationWithIcon = (type) => {
@@ -191,11 +191,7 @@ export const CreatePattern = () => {
               open={open}
               onOpenChange={handleOpenChange}
             >
-              <Button
-                type="primary"
-                danger
-                icon={<ExclamationOutlined />}
-              >
+              <Button type="primary" danger icon={<ExclamationOutlined />}>
                 Instruction
               </Button>
             </Popover>
@@ -218,6 +214,7 @@ export const CreatePattern = () => {
                     type="primary"
                     danger
                     htmlType="button"
+                    icon={<PlusOutlined />}
                   >
                     Save pattern
                   </Button>

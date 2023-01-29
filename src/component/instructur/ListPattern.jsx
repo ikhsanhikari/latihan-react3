@@ -8,6 +8,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { BASE_URL } from "../../common/Constant";
 import { ACCESS_TOKEN } from "../../util/constant";
+import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
 
@@ -47,12 +48,22 @@ export const ListPattern = () => {
         <br />
         <Card title="List Pattern" bordered={false}>
           <Space>
-          <Link to={"/create-pattern"}>
-            <Button type="primary">Create pattern</Button>
-          </Link>
-          <Button type="primary" onClick={()=>{downloadReport()}}>Download</Button>  
+            <Link to={"/create-pattern"}>
+              <Button icon={<PlusOutlined />} type="primary">
+                Create pattern
+              </Button>
+            </Link>
+            <Button
+              type="primary"
+              icon={<DownloadOutlined />}
+              danger
+              onClick={() => {
+                downloadReport();
+              }}
+            >
+              Download
+            </Button>
           </Space>
-          
           <br /> <br />
           <Row>
             <Col span={24}>
