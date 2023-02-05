@@ -4,11 +4,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { BASE_URL } from "../../common/Constant";
 import { ACCESS_TOKEN } from "../../util/constant";
-import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
 
@@ -17,7 +17,6 @@ export const ListPattern = () => {
   const [lastIndex, setLastIndex] = useState();
 
   const downloadReport = () => {
-    console.log("ke klik kok");
     axios
       .get(BASE_URL + "/report/pattern", {
         headers: {
